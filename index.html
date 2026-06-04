@@ -9,112 +9,67 @@
 <style>
 
 *{
+    margin:0;
+    padding:0;
     box-sizing:border-box;
 }
 
 body{
-    margin:0;
-    padding:12px;
-    font-family:Inter,Segoe UI,Arial,sans-serif;
     background:transparent;
+    padding:10px;
+    font-family:Arial, Helvetica, sans-serif;
 }
 
 .card{
 
     width:100%;
-    max-width:1400px;
 
-    margin:auto;
+    background:linear-gradient(
+        135deg,
+        #ffd194 0%,
+        #ffb347 40%,
+        #ff8c42 75%,
+        #ff6b35 100%
+    );
 
-    background:
-        linear-gradient(
-            180deg,
-            #ffd7a8 0%,
-            #ffbc72 50%,
-            #ff9550 100%
-        );
+    border-radius:24px;
 
-    border-radius:22px;
+    padding:24px;
 
-    padding:22px 40px;
-
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
+    text-align:center;
 
     box-shadow:
-        0 10px 35px rgba(0,0,0,.12);
+        0 10px 30px rgba(0,0,0,.18);
 
-    position:relative;
-    overflow:hidden;
-}
-
-/* brilho suave do céu */
-.card::before{
-
-    content:"";
-
-    position:absolute;
-
-    top:-120px;
-    left:50%;
-
-    transform:translateX(-50%);
-
-    width:500px;
-    height:250px;
-
-    border-radius:50%;
-
-    background:
-        radial-gradient(
-            circle,
-            rgba(255,255,255,.35) 0%,
-            rgba(255,255,255,0) 70%
-        );
-
-    pointer-events:none;
 }
 
 .quote-mark{
 
-    font-size:52px;
+    font-size:48px;
 
-    color:rgba(128,69,20,.75);
+    color:rgba(255,255,255,.7);
 
     line-height:1;
 
-    margin-bottom:8px;
-
-    z-index:2;
+    margin-bottom:10px;
 }
 
 .quote{
 
-    width:100%;
+    color:#2c2c2c;
 
-    text-align:center;
+    font-size:32px;
 
-    font-size:1.65rem;
     font-weight:500;
-
-    color:#2f2f2f;
 
     line-height:1.4;
 
     margin-bottom:20px;
-
-    z-index:2;
-}
-
-.loading{
-    opacity:.6;
 }
 
 button{
 
-    background:#d66a11;
+    background:#c75a00;
 
     color:white;
 
@@ -125,38 +80,29 @@ button{
     padding:12px 24px;
 
     font-size:14px;
-    font-weight:700;
+
+    font-weight:bold;
 
     cursor:pointer;
 
     transition:.2s;
-
-    z-index:2;
 }
 
 button:hover{
 
-    background:#b85a0d;
-
-    transform:translateY(-2px);
+    background:#a84b00;
 }
 
-button:active{
-
-    transform:translateY(1px);
+.loading{
+    opacity:.6;
 }
 
-/* responsivo */
-
-@media(max-width:900px){
-
-    .card{
-        padding:20px;
-    }
+@media(max-width:700px){
 
     .quote{
-        font-size:1.2rem;
+        font-size:22px;
     }
+
 }
 
 </style>
@@ -187,21 +133,11 @@ const fallback = [
 "Minha disciplina cria meu futuro.",
 "Eu mereço prosperar.",
 "Meu potencial é ilimitado.",
-"Tudo o que preciso para avançar já está dentro de mim.",
-"Estou evoluindo todos os dias.",
-"Eu confio no processo da minha jornada.",
 "Tenho coragem para agir.",
-"Sou resiliente diante dos desafios.",
 "Meu foco gera resultados.",
-"Minha energia está alinhada com meus objetivos.",
-"Posso aprender qualquer coisa com dedicação.",
-"Meu crescimento acontece constantemente.",
-"Sou capaz de criar a vida que desejo.",
+"Estou evoluindo todos os dias.",
 "Cada pequeno passo importa.",
-"Tenho valor e propósito.",
-"Acredito em mim mesmo.",
-"Estou preparado para novas oportunidades.",
-"Minha determinação supera qualquer obstáculo."
+"Posso melhorar um pouco todos os dias."
 
 ];
 
@@ -211,7 +147,8 @@ async function loadAffirmation(){
         document.getElementById("quote");
 
     quote.classList.add("loading");
-    quote.innerText = "Carregando afirmação...";
+    quote.innerText =
+        "Carregando afirmação...";
 
     try{
 
@@ -224,43 +161,18 @@ async function loadAffirmation(){
         const text =
             await response.text();
 
-        let frase = text;
+        quote.innerText =
+            text.replace(/<[^>]*>/g,"").trim();
 
-        try{
+    }catch{
 
-            const json =
-                JSON.parse(text);
-
-            frase =
-                json.frase ||
-                json.texto ||
-                json.mensagem ||
-                json.quote ||
-                text;
-
-        }catch(e){}
-
-        frase = frase
-            .replace(/<[^>]*>/g,"")
-            .trim();
-
-        if(frase.length < 3){
-            throw new Error();
-        }
-
-        quote.innerText = frase;
-
-    }catch(e){
-
-        const random =
+        quote.innerText =
             fallback[
                 Math.floor(
                     Math.random() *
                     fallback.length
                 )
             ];
-
-        quote.innerText = random;
     }
 
     quote.classList.remove("loading");
