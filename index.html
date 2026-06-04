@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Afirmação do Dia</title>
+
+<style>
+body {
+    margin: 0;
+    padding: 20px;
+    font-family: Inter, Arial, sans-serif;
+    background: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.card {
+    width: 100%;
+    max-width: 700px;
+    padding: 28px;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0,0,0,.08);
+    text-align: center;
+}
+
+.quote {
+    font-size: 1.3rem;
+    line-height: 1.7;
+    margin-bottom: 20px;
+}
+
+.loading {
+    opacity: .6;
+}
+
+button {
+    border: none;
+    padding: 12px 18px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+button:hover {
+    opacity: .9;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+    <div id="quote" class="quote loading">
+        Carregando afirmação...
+    </div>
+
+    <button onclick="loadAffirmation()">
+        Nova Afirmação
+    </button>
+</div>
+
+<script>
+
+const fallback = [
+"Eu sou capaz de alcançar meus objetivos.",
+"Cada dia traz novas oportunidades.",
+"Meu esforço produz resultados.",
+"Eu confio no meu potencial.",
+"Tenho força para superar desafios.",
+"Meu crescimento acontece continuamente.",
+"Sou mais forte do que imagino.",
+"Posso aprender qualquer coisa com dedicação.",
+"Minha disciplina me aproxima dos meus sonhos.",
+"Estou construindo um futuro melhor.",
+"Eu mereço coisas boas.",
+"Tenho coragem para agir.",
+"Meu foco cria resultados.",
+"Sou resiliente diante das dificuldades.",
+"Confio no processo da minha evolução.",
+"Minha energia está direcionada ao que importa.",
+"Tenho valor e propósito.",
+"Estou preparado para novas conquistas.",
+"Posso melhorar um pouco todos os dias.",
+"Minha atitude faz diferença."
+];
+
+async function loadAffirmation() {
+
+    const quote = document.getElementById("quote");
+
+    quote.classList.add("loading");
+    quote.textContent = "Carregando afirmação...";
+
+    try {
+
+        const response = await fetch(
+            "https://motivacional.top/api.php?acao=aleatoria&_=" + Date.now()
+        );
+
+        const text = await response.text();
+
+        let frase = text;
+
+        try {
+            const json = JSON.parse(text);
+
+            frase =
+                json.frase ||
+                json.mensagem ||
+                json.texto ||
+                json.quote ||
+                text;
+
+        } catch {}
+
+        quote.textContent = frase.replace(/<[^>]*>/g, "").trim();
+
+    } catch {
+
+        const random =
+            fallback[Math.floor(Math.random() * fallback.length)];
+
+        quote.textContent = random;
+    }
+
+    quote.classList.remove("loading");
+}
+
+loadAffirmation();
+
+</script>
+
+</body>
+</html>
