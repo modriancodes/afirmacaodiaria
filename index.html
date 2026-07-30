@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -7,7 +6,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Afirmacao do Dia</title>
+<title>Afirmação do Dia</title>
 
 <script src="frases.js"></script>
 
@@ -26,7 +25,6 @@ font-family:Inter,Arial,sans-serif;
 background:transparent;
 
 }
-
 
 .card{
 
@@ -52,7 +50,6 @@ box-shadow:
 
 }
 
-
 .quote-mark{
 
 font-size:52px;
@@ -65,7 +62,6 @@ margin-bottom:8px;
 
 }
 
-
 .quote{
 
 font-size:32px;
@@ -75,9 +71,27 @@ line-height:1.45;
 
 color:#2f2f2f;
 
-margin-bottom:20px;
+margin-bottom:12px;
 
-transition:.35s ease;
+transition:.3s ease;
+
+}
+
+
+.category{
+
+font-size:14px;
+
+font-weight:700;
+
+letter-spacing:1px;
+
+text-transform:uppercase;
+
+color:
+rgba(0,0,0,.55);
+
+margin-bottom:20px;
 
 }
 
@@ -144,16 +158,26 @@ font-size:22px;
 
 <body>
 
+
 <div class="card">
 
 <div class="quote-mark">
+
 ❝
+
 </div>
 
 
-<div id="quote" class="quote loading">
+<div id="quote" class="quote">
 
 Carregando afirmação...
+
+</div>
+
+
+<div id="category" class="category">
+
+&nbsp;
 
 </div>
 
@@ -164,7 +188,9 @@ Nova Afirmação
 
 </button>
 
+
 </div>
+
 
 
 <script>
@@ -172,30 +198,34 @@ Nova Afirmação
 
 const STORAGE_FRASE_ATUAL = "fraseAtual";
 
-const STORAGE_FRASES_USADAS = "frasesUtilizadas";
+const STORAGE_INDICE_ATUAL = "indiceAtual";
+
+const STORAGE_UTILIZADAS = "frasesUtilizadas";
 
 
 
-function carregarFrasesUtilizadas(){
 
-const frases =
+function carregarUtilizadas(){
+
+const utilizadas =
+
 localStorage.getItem(
-STORAGE_FRASES_USADAS
+STORAGE_UTILIZADAS
 );
 
-return frases
-? JSON.parse(frases)
+return utilizadas
+? JSON.parse(utilizadas)
 : [];
 
 }
 
 
 
-function salvarFrasesUtilizadas(lista){
+function salvarUtilizadas(lista){
 
 localStorage.setItem(
 
-STORAGE_FRASES_USADAS,
+STORAGE_UTILIZADAS,
 
 JSON.stringify(lista)
 
@@ -205,31 +235,30 @@ JSON.stringify(lista)
 
 
 
-function salvarFraseAtual(frase){
+function salvarIndiceAtual(indice){
 
 localStorage.setItem(
 
-STORAGE_FRASE_ATUAL,
+STORAGE_INDICE_ATUAL,
 
-frase
+indice
 
 );
 
 }
 
 
-
-function carregarFraseAtual(){
+function carregarIndiceAtual(){
 
 return localStorage.getItem(
-STORAGE_FRASE_ATUAL
+STORAGE_INDICE_ATUAL
 );
 
 }
 
 
 
-function obterNovaFrase(){
+function obterNovoIndice(){
 
 
 if(
@@ -242,15 +271,13 @@ AFIRMACOES.length === 0
 
 ){
 
-return "Não foi possível carregar as afirmações.";
+return null;
 
 }
 
 
-
 let utilizadas =
-carregarFrasesUtilizadas();
-
+carregarUtilizadas();
 
 
 if(
@@ -262,25 +289,40 @@ AFIRMACOES.length
 
 utilizadas = [];
 
-salvarFrasesUtilizadas([]);
+salvarUtilizadas([]);
 
 }
 
 
 
-let disponiveis =
-
-AFIRMACOES.filter(
-
-frase =>
-
-!utilizadas.includes(frase)
-
-);
+let disponiveis = [];
 
 
+for(
 
-const indice =
+let i=0;
+
+i<AFIRMACOES.length;
+
+i++
+
+){
+
+if(
+
+!utilizadas.includes(i)
+
+){
+
+disponiveis.push(i);
+
+}
+
+}
+
+
+
+const indiceAleatorio =
 
 Math.floor(
 
@@ -291,57 +333,85 @@ disponiveis.length
 );
 
 
+const indiceEscolhido =
 
-const fraseEscolhida =
-
-disponiveis[indice];
-
+disponiveis[
+indiceAleatorio
+];
 
 
 utilizadas.push(
-fraseEscolhida
+indiceEscolhido
 );
 
 
-salvarFrasesUtilizadas(
+salvarUtilizadas(
 utilizadas
 );
 
 
-salvarFraseAtual(
-fraseEscolhida
+salvarIndiceAtual(
+indiceEscolhido
 );
 
 
-return fraseEscolhida;
+return indiceEscolhido;
 
 
 }
 
 
 
-function exibirFrase(frase){
+function exibirFrase(indice){
 
-const elemento =
+
+const frase =
+
+AFIRMACOES[indice];
+
+
+if(!frase){
+
+return;
+
+}
+
+
+const quote =
 
 document.getElementById(
 "quote"
 );
 
 
-elemento.classList.add(
-"loading"
+const category =
+
+document.getElementById(
+"category"
 );
+
+
+
+quote.style.opacity = .4;
+category.style.opacity = .4;
+
 
 
 setTimeout(()=>{
 
-elemento.innerText =
-frase;
 
-elemento.classList.remove(
-"loading"
-);
+quote.innerText =
+frase.texto;
+
+
+category.innerText =
+frase.categoria;
+
+
+
+quote.style.opacity = 1;
+category.style.opacity = 1;
+
 
 },150);
 
@@ -363,37 +433,42 @@ AFIRMACOES.length === 0
 
 ){
 
-exibirFrase(
+document.getElementById(
+"quote"
+).innerText =
 
-"Erro ao carregar o arquivo frases.js."
-
-);
+"Erro ao carregar o arquivo frases.js.";
 
 return;
 
 }
 
 
-let fraseAtual =
 
-carregarFraseAtual();
+let indiceAtual =
+
+carregarIndiceAtual();
 
 
 
 if(
 
-!fraseAtual
+indiceAtual === null
+
+||
+
+indiceAtual === ""
 
 ){
 
-fraseAtual =
-obterNovaFrase();
+indiceAtual =
+obterNovoIndice();
 
 }
 
 
 exibirFrase(
-fraseAtual
+Number(indiceAtual)
 );
 
 
@@ -404,13 +479,13 @@ fraseAtual
 function novaAfirmacao(){
 
 
-const frase =
+const indice =
 
-obterNovaFrase();
+obterNovoIndice();
 
 
 exibirFrase(
-frase
+indice
 );
 
 
@@ -423,8 +498,6 @@ carregarWidget();
 
 </script>
 
-
 </body>
 
 </html>
-```
