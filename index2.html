@@ -1,0 +1,430 @@
+```html
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Afirmação do Dia</title>
+
+<script src="frases.js"></script>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+
+padding:10px;
+font-family:Inter,Arial,sans-serif;
+background:transparent;
+
+}
+
+
+.card{
+
+width:100%;
+
+padding:24px;
+
+border-radius:24px;
+
+text-align:center;
+
+background:
+linear-gradient(
+135deg,
+#ffd194 0%,
+#ffb347 45%,
+#ff944d 75%,
+#ff6b35 100%
+);
+
+box-shadow:
+0 10px 30px rgba(0,0,0,.15);
+
+}
+
+
+.quote-mark{
+
+font-size:52px;
+line-height:1;
+
+color:
+rgba(255,255,255,.75);
+
+margin-bottom:8px;
+
+}
+
+
+.quote{
+
+font-size:32px;
+font-weight:500;
+
+line-height:1.45;
+
+color:#2f2f2f;
+
+margin-bottom:20px;
+
+transition:.35s ease;
+
+}
+
+
+.loading{
+
+opacity:.65;
+
+}
+
+
+button{
+
+border:none;
+
+background:#c75a00;
+
+color:white;
+
+padding:12px 24px;
+
+border-radius:12px;
+
+font-size:14px;
+
+font-weight:700;
+
+cursor:pointer;
+
+transition:.2s;
+
+}
+
+
+button:hover{
+
+background:#a84b00;
+
+transform:translateY(-2px);
+
+}
+
+
+button:active{
+
+transform:translateY(1px);
+
+}
+
+
+@media(max-width:700px){
+
+.quote{
+
+font-size:22px;
+
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="card">
+
+<div class="quote-mark">
+❝
+</div>
+
+
+<div id="quote" class="quote loading">
+
+Carregando afirmação...
+
+</div>
+
+
+<button onclick="novaAfirmacao()">
+
+Nova Afirmação
+
+</button>
+
+</div>
+
+
+<script>
+
+
+const STORAGE_FRASE_ATUAL = "fraseAtual";
+
+const STORAGE_FRASES_USADAS = "frasesUtilizadas";
+
+
+
+function carregarFrasesUtilizadas(){
+
+const frases =
+localStorage.getItem(
+STORAGE_FRASES_USADAS
+);
+
+return frases
+? JSON.parse(frases)
+: [];
+
+}
+
+
+
+function salvarFrasesUtilizadas(lista){
+
+localStorage.setItem(
+
+STORAGE_FRASES_USADAS,
+
+JSON.stringify(lista)
+
+);
+
+}
+
+
+
+function salvarFraseAtual(frase){
+
+localStorage.setItem(
+
+STORAGE_FRASE_ATUAL,
+
+frase
+
+);
+
+}
+
+
+
+function carregarFraseAtual(){
+
+return localStorage.getItem(
+STORAGE_FRASE_ATUAL
+);
+
+}
+
+
+
+function obterNovaFrase(){
+
+
+if(
+
+typeof AFIRMACOES === "undefined"
+
+||
+
+AFIRMACOES.length === 0
+
+){
+
+return "Não foi possível carregar as afirmações.";
+
+}
+
+
+
+let utilizadas =
+carregarFrasesUtilizadas();
+
+
+
+if(
+
+utilizadas.length >=
+AFIRMACOES.length
+
+){
+
+utilizadas = [];
+
+salvarFrasesUtilizadas([]);
+
+}
+
+
+
+let disponiveis =
+
+AFIRMACOES.filter(
+
+frase =>
+
+!utilizadas.includes(frase)
+
+);
+
+
+
+const indice =
+
+Math.floor(
+
+Math.random() *
+
+disponiveis.length
+
+);
+
+
+
+const fraseEscolhida =
+
+disponiveis[indice];
+
+
+
+utilizadas.push(
+fraseEscolhida
+);
+
+
+salvarFrasesUtilizadas(
+utilizadas
+);
+
+
+salvarFraseAtual(
+fraseEscolhida
+);
+
+
+return fraseEscolhida;
+
+
+}
+
+
+
+function exibirFrase(frase){
+
+const elemento =
+
+document.getElementById(
+"quote"
+);
+
+
+elemento.classList.add(
+"loading"
+);
+
+
+setTimeout(()=>{
+
+elemento.innerText =
+frase;
+
+elemento.classList.remove(
+"loading"
+);
+
+},150);
+
+
+}
+
+
+
+function carregarWidget(){
+
+
+if(
+
+typeof AFIRMACOES === "undefined"
+
+||
+
+AFIRMACOES.length === 0
+
+){
+
+exibirFrase(
+
+"Erro ao carregar o arquivo frases.js."
+
+);
+
+return;
+
+}
+
+
+let fraseAtual =
+
+carregarFraseAtual();
+
+
+
+if(
+
+!fraseAtual
+
+){
+
+fraseAtual =
+obterNovaFrase();
+
+}
+
+
+exibirFrase(
+fraseAtual
+);
+
+
+}
+
+
+
+function novaAfirmacao(){
+
+
+const frase =
+
+obterNovaFrase();
+
+
+exibirFrase(
+frase
+);
+
+
+}
+
+
+
+carregarWidget();
+
+
+</script>
+
+
+</body>
+
+</html>
+```
