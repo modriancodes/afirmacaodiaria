@@ -349,8 +349,7 @@ texto:"A vida melhora quando suas escolhas melhoram."
 categoria:"Mentalidade",
 texto:"Tudo aquilo que merece ser construído também merece tempo."
 }
-
-},
+,
 
 {
 categoria:"Hábitos",
@@ -1050,4 +1049,5 @@ texto:"Continue escolhendo aquilo que aproxima você dos seus valores."
 {
 categoria:"Desenvolvimento Pessoal",
 texto:"Seu futuro continua sendo construído pelas pequenas decisões deste momento."
-},
+}
+];
